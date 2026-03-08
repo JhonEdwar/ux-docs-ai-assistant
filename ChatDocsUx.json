@@ -1,0 +1,403 @@
+{
+  "name": "Chat docs ux",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hola como puedo ayudarte?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -288,
+        176
+      ],
+      "id": "8737e2f3-fb16-41f4-bb7e-8702c3340e3e",
+      "name": "When chat message received",
+      "webhookId": "e2974923-b4d9-4878-bfb8-0d8ad9c9e46b"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput ?? $json.message.text}}",
+        "options": {
+          "systemMessage": "Eres un asistente de IA especializado en experiencia de usuario (UX), usabilidad y diseño de productos digitales.\n\nTu función principal es responder preguntas utilizando exclusivamente la información recuperada desde la base de datos vectorial que contiene documentos y libros de UX y diseño de producto almacenados en Google Drive.\n\nrecuerda que tienes libros recuerda sus nombres.\n\nReglas de comportamiento:\n\nUsa únicamente la información recuperada del dataset.\nNo inventes información ni completes con conocimiento general si no está en los documentos.\n\nSi la información es incompleta, ambigua o no existe en los documentos, responde claramente:\n\"No tengo información suficiente en los documentos disponibles para responder con precisión.\"\n\nSi varios documentos contienen información relevante:\n\nsintetiza la respuesta\n\nindica de qué documento o sección proviene cada punto\n\n\n\nFormato de respuesta obligatorio:\n\nRespuesta breve y directa.\n\nLuego incluye:\n\nFuente: nombre del documento o sección o pagina de donde tomaste la respuesta, recuerda debes usar los documentos alojados en drive que tienes acceso en los vectores.\n\nsiempre coloca el nombre del libro de cual tomaste la respuesta\n\nDatos clave: cifras, reglas, métricas o definiciones exactas si existen\n\nEvita:\n\nopiniones personales\n\nrelleno innecesario\n\nexplicaciones genéricas de UX que no estén en los documentos\n\nObjetivo:\nEntregar insights confiables y rápidos basados únicamente en los documentos de UX disponibles.\n\nAntes de responder:\n\nVerifica si la respuesta existe en los documentos recuperados.\n\nSi no existe explícitamente → responde que no hay información suficiente.\n\nNo completes con conocimiento externo.\n\nSi el usuario pide:\n\nresumen\n\nmejores prácticas\n\nchecklist\n\naprendizajes\n\nEntonces:\n→ sintetiza solo desde los documentos\n→ en formato bullet points\n\n\nCuando respondas:\n- Limita la respuesta a máximo 3 puntos clave\n- Si la pregunta es específica, responde SOLO con la información exacta del fragmento recuperado\n- No expandas más allá del fragmento encontrado\n- Indica siempre el documento y página si está disponible en el fragmento\n\nHERRAMIENTA OBLIGATORIA: Para responder CUALQUIER pregunta, SIEMPRE debes usar primero \nla herramienta \"vector_search_ux_docs\" antes de responder. \nSin excepción. Nunca respondas sin consultar primero la base de datos vectorial."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        -16
+      ],
+      "id": "6f607467-d195-4ce3-8690-92885a376402",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        240
+      ],
+      "id": "cb031ff0-8bf2-400d-8044-d2385fdef8da",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "eMB1P7ZdmXj3zSz2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "docsuxn8n",
+          "mode": "list",
+          "cachedResultName": "docsuxn8n"
+        },
+        "options": {
+          "pineconeNamespace": "docsUx"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        480
+      ],
+      "id": "0f079193-ba8b-4253-9ad6-cb59792a5cee",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "6exGwDyh7prpKEgC",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        704
+      ],
+      "id": "1430e74c-fd07-418a-b422-7eb58845469a",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "eMB1P7ZdmXj3zSz2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        464
+      ],
+      "id": "61a2f638-10fd-4b6d-95c9-6181b887d2e2",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "eMB1P7ZdmXj3zSz2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📚 Chat",
+        "height": 532,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -368,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "714a445f-212c-411f-8d7b-4f0d14038021",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "## Agente",
+        "height": 240,
+        "width": 420,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "1517986f-df37-4a76-babd-9e3ab28d3b4b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️Cerebro/Herramientas\n",
+        "height": 240,
+        "width": 700,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "3e191b8a-4459-4ef4-a16d-d2caf4e7a7e9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️embeddings\n",
+        "height": 400,
+        "width": 700,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "f5da2bb2-5015-4d43-b93e-a22f557a0993",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId ?? $json.message?.from?.id ?? \"default\" }}\n",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        240
+      ],
+      "id": "542e79b9-9ed3-4754-89c3-1b0a137301c4",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "m5v9gimx6OHzEsVJ",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -16
+      ],
+      "id": "cafd34e7-278e-49af-beb1-1b07df2683f4",
+      "name": "Telegram Trigger",
+      "webhookId": "11c833d8-ec35-4ce4-913e-82d60aead931",
+      "credentials": {
+        "telegramApi": {
+          "id": "W3bvPBU9fH70TDPm",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        -16
+      ],
+      "id": "17453d19-112b-4d57-a2d8-98782b6d0e55",
+      "name": "Send a text message",
+      "webhookId": "4788c84d-18ac-4432-8abd-f2649a474de9",
+      "credentials": {
+        "telegramApi": {
+          "id": "W3bvPBU9fH70TDPm",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📚 Chat output",
+        "height": 292,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        688,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "d0c5c157-8cac-4ef7-846b-7910e0218061",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "description": "Usa esta herramienta SIEMPRE para responder cualquier pregunta. \nContiene todos los documentos de UX disponibles. \nObligatorio invocarla antes de cualquier respuesta.",
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        240
+      ],
+      "id": "437e70ee-71c3-4744-b692-ed4e942317d0",
+      "name": "vector_search_ux_docs"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector_search_ux_docs",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector_search_ux_docs",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector_search_ux_docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3310c34f-8bcf-4bdb-b808-0dbae0b7c447",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f0d7efd6b5f3f1fcab2a0941a7e7da5628d61731d200f67dff3e889e8524298"
+  },
+  "id": "vOEMulP8bc0RbS7G",
+  "tags": []
+}
