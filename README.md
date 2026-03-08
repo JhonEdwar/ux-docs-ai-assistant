@@ -1,10 +1,10 @@
-# 📚 UX Docs AI Assistant — n8n RAG Workflows
+# UX Docs AI Assistant — n8n RAG Workflows
 
-Asistente de IA especializado en UX y diseño de productos digitales. Responde preguntas basándose **exclusivamente** en documentos y libros de UX indexados en Pinecone, accesible vía chat web y Telegram.
+Asistente de inteligencia artificial especializado en UX, usabilidad y diseño de productos digitales. Responde preguntas basándose exclusivamente en documentos y libros de UX indexados en una base de datos vectorial (Pinecone), accesible vía chat web y Telegram.
 
 ---
 
-## 🗂️ Estructura del proyecto
+## Estructura del proyecto
 
 ```
 /
@@ -14,7 +14,7 @@ Asistente de IA especializado en UX y diseño de productos digitales. Responde p
 
 ---
 
-## 🔄 Workflows
+## Workflows
 
 ### 1. `loadDataUx` — Ingesta de documentos
 
@@ -31,7 +31,7 @@ Google Drive (PDFs) → Document Loader → Text Splitter → Embeddings OpenAI 
 | Índice | `docsuxn8n` |
 | Modelo de embeddings | `text-embedding-3-large` |
 
-> ⚠️ Limpiar el namespace en Pinecone antes de recargar documentos para evitar duplicados.
+> Limpiar el namespace en Pinecone antes de recargar documentos para evitar duplicados.
 
 ---
 
@@ -55,7 +55,7 @@ Telegram / Chat UI → AI Agent → Pinecone (vector_search_ux_docs) → Respues
 
 ---
 
-## 🧠 Comportamiento del agente
+## Comportamiento del agente
 
 - Solo responde con información recuperada de los vectores, nunca con conocimiento general.
 - Si no encuentra información responde: *"No tengo información suficiente en los documentos disponibles."*
@@ -64,7 +64,7 @@ Telegram / Chat UI → AI Agent → Pinecone (vector_search_ux_docs) → Respues
 
 ---
 
-## 🚀 Setup
+## Setup
 
 ### 1. Importar workflows
 En n8n: **Settings → Import workflow** → cargar cada `.json`.
@@ -99,7 +99,7 @@ Métrica:      cosine
 
 ---
 
-## 💬 Ejemplos de uso
+## Ejemplos de uso
 
 ```
 ¿Qué es la usabilidad según Nielsen?
@@ -109,7 +109,7 @@ Dame un checklist de pruebas de usabilidad
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 | Problema | Solución |
 |----------|----------|
@@ -121,7 +121,7 @@ Dame un checklist de pruebas de usabilidad
 
 ---
 
-## 📦 Stack
+## Stack
 
 - [n8n](https://n8n.io/) — Orquestación de workflows
 - [OpenAI](https://openai.com/) — LLM + Embeddings
@@ -131,6 +131,12 @@ Dame un checklist de pruebas de usabilidad
 
 ---
 
-## 📄 Licencia
+## Proximas mejoras
+
+- Mejorar respuesta del chat
+- Optimizar el namespace de pincone para evitar tener tantos o que se dupliquen docs
+- Optimizar la metadata en doc grandes 
+
+## Licencia
 
 MIT
